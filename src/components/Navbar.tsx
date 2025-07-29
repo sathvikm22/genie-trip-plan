@@ -11,9 +11,11 @@ import { Globe, User, Menu, X } from "lucide-react";
 interface NavbarProps {
   onMenuToggle: () => void;
   isMenuOpen: boolean;
+  onLogout?: () => void;
+  user?: { name: string; email: string } | null;
 }
 
-const Navbar = ({ onMenuToggle, isMenuOpen }: NavbarProps) => {
+const Navbar = ({ onMenuToggle, isMenuOpen, onLogout, user }: NavbarProps) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
 
   const languages = [
@@ -30,7 +32,7 @@ const Navbar = ({ onMenuToggle, isMenuOpen }: NavbarProps) => {
   ];
 
   return (
-    <nav className="h-16 bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 travel-shadow">
+    <nav className="h-16 bg-white/95 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="h-full px-4 lg:px-6 flex items-center justify-between max-w-7xl mx-auto">
         {/* Left side - Logo and menu toggle */}
         <div className="flex items-center gap-4">
@@ -43,15 +45,14 @@ const Navbar = ({ onMenuToggle, isMenuOpen }: NavbarProps) => {
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🧳</span>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-travel-gradient rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">G</span>
+            </div>
             <div>
               <h1 className="text-xl font-bold bg-travel-gradient bg-clip-text text-transparent">
-                AI MAP GENIE
+                GlobeGenie
               </h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Your Personal Travel Companion
-              </p>
             </div>
           </div>
         </div>
@@ -93,17 +94,28 @@ const Navbar = ({ onMenuToggle, isMenuOpen }: NavbarProps) => {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-white border-white/20 shadow-travel">
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5">
+            <DropdownMenuContent align="end" className="w-48 bg-white border-gray-200 shadow-lg">
+              {user && (
+                <>
+                  <div className="px-3 py-2 border-b border-gray-100">
+                    <p className="font-medium">{user.name}</p>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                  </div>
+                </>
+              )}
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-50">
                 Profile Settings
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-50">
                 Travel Preferences
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-50">
                 Saved Places
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5 text-destructive">
+              <DropdownMenuItem 
+                className="cursor-pointer hover:bg-gray-50 text-destructive"
+                onClick={onLogout}
+              >
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>

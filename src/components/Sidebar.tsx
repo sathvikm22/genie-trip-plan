@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, onClose, activeTab, onTabChange }: SidebarProps) => {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white/90 backdrop-blur-lg border-r border-white/20 z-50 travel-shadow transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto",
+          "fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white/95 backdrop-blur-lg border-r border-gray-200 z-50 shadow-lg transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -82,10 +82,10 @@ const Sidebar = ({ isOpen, onClose, activeTab, onTabChange }: SidebarProps) => {
 
         {/* Bottom section with travel tips */}
         <div className="absolute bottom-4 left-4 right-4">
-          <div className="bg-card-gradient rounded-lg p-4 card-shadow">
+          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-4 border border-primary/20">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">✨</span>
-              <h3 className="font-medium text-sm">Travel Tip</h3>
+              <div className="w-4 h-4 bg-primary rounded-full"></div>
+              <h3 className="font-medium text-sm text-primary">Pro Tip</h3>
             </div>
             <p className="text-xs text-muted-foreground">
               Use voice input to quickly plan your trip in any language!

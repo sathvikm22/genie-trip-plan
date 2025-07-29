@@ -13,7 +13,6 @@ const Dashboard = () => {
     if (!searchQuery.trim()) return;
     
     setIsPlanning(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsPlanning(false);
     setShowItinerary(true);
@@ -24,33 +23,42 @@ const Dashboard = () => {
       day: 1,
       title: "Arrival & Local Exploration",
       activities: [
-        { time: "Morning", activity: "Check-in at Mountain View Resort", location: "Manali", icon: "🏨" },
-        { time: "Afternoon", activity: "Explore Mall Road & Local Markets", location: "Manali", icon: "🛍️" },
-        { time: "Evening", activity: "Sunset at Solang Valley", location: "Solang Valley", icon: "🌅" }
+        { time: "Morning", activity: "Check-in at Mountain View Resort", location: "Manali", type: "accommodation" },
+        { time: "Afternoon", activity: "Explore Mall Road & Local Markets", location: "Manali", type: "activity" },
+        { time: "Evening", activity: "Sunset at Solang Valley", location: "Solang Valley", type: "activity" }
       ]
     },
     {
       day: 2,
       title: "Adventure & Trekking",
       activities: [
-        { time: "Morning", activity: "Beas Kund Trek Start", location: "Solang Valley", icon: "🥾" },
-        { time: "Afternoon", activity: "Mountain Lunch & Photography", location: "Beas Kund", icon: "📸" },
-        { time: "Evening", activity: "Local Himachali Dinner", location: "Manali", icon: "🍽️" }
+        { time: "Morning", activity: "Beas Kund Trek Start", location: "Solang Valley", type: "activity" },
+        { time: "Afternoon", activity: "Mountain Lunch & Photography", location: "Beas Kund", type: "food" },
+        { time: "Evening", activity: "Local Himachali Dinner", location: "Manali", type: "food" }
       ]
     },
     {
       day: 3,
       title: "Culture & Departure",
       activities: [
-        { time: "Morning", activity: "Visit Hadimba Temple", location: "Manali", icon: "🏛️" },
-        { time: "Afternoon", activity: "Local Food Tour", location: "Old Manali", icon: "🥘" },
-        { time: "Evening", activity: "Departure to Delhi", location: "Manali Bus Stand", icon: "🚌" }
+        { time: "Morning", activity: "Visit Hadimba Temple", location: "Manali", type: "activity" },
+        { time: "Afternoon", activity: "Local Food Tour", location: "Old Manali", type: "food" },
+        { time: "Evening", activity: "Departure to Delhi", location: "Manali Bus Stand", type: "transport" }
       ]
     }
   ];
 
+  const getActivityColor = (type: string) => {
+    switch (type) {
+      case "food": return "from-orange-400 to-red-400";
+      case "accommodation": return "from-blue-400 to-cyan-400";
+      case "transport": return "from-gray-400 to-gray-600";
+      default: return "from-green-400 to-emerald-400";
+    }
+  };
+
   return (
-    <div className="flex-1 p-6 space-y-6 sky-gradient min-h-screen">
+    <div className="flex-1 p-6 space-y-6 bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
       {/* Hero Section */}
       <div className="text-center space-y-6 py-12">
         <div className="space-y-4">
@@ -74,7 +82,7 @@ const Dashboard = () => {
               placeholder="Plan my 3-day solo trip to Himachal with trekking and budget food"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-14 pl-12 pr-20 text-base bg-white/90 backdrop-blur-sm border-white/30 shadow-travel"
+              className="h-14 pl-12 pr-20 text-base bg-white border border-gray-200 shadow-lg"
               onKeyPress={(e) => e.key === 'Enter' && handlePlanTrip()}
             />
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -94,9 +102,8 @@ const Dashboard = () => {
           <Button
             onClick={handlePlanTrip}
             disabled={!searchQuery.trim() || isPlanning}
-            variant="travel"
+            className="mt-4 bg-travel-gradient hover:opacity-90"
             size="lg"
-            className="mt-4"
           >
             {isPlanning ? (
               <>
@@ -119,13 +126,15 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold text-center mb-6">Popular Trip Ideas</h2>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { title: "Weekend Goa Beach", duration: "2 days", type: "Beach", icon: "🏖️" },
-              { title: "Himalayan Trek", duration: "5 days", type: "Adventure", icon: "⛰️" },
-              { title: "Rajasthan Heritage", duration: "7 days", type: "Culture", icon: "🏰" }
+              { title: "Weekend Goa Beach", duration: "2 days", type: "Beach", color: "from-blue-500 to-cyan-500" },
+              { title: "Himalayan Trek", duration: "5 days", type: "Adventure", color: "from-green-500 to-emerald-500" },
+              { title: "Rajasthan Heritage", duration: "7 days", type: "Culture", color: "from-orange-500 to-red-500" }
             ].map((trip, index) => (
-              <Card key={index} className="cursor-pointer hover:shadow-travel travel-transition hover:scale-105 bg-white/80 backdrop-blur-sm">
+              <Card key={index} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white border border-gray-200">
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl mb-2">{trip.icon}</div>
+                  <div className={`w-12 h-12 bg-gradient-to-br ${trip.color} rounded-lg flex items-center justify-center mx-auto mb-3`}>
+                    <MapPin className="w-6 h-6 text-white" />
+                  </div>
                   <h3 className="font-semibold mb-1">{trip.title}</h3>
                   <p className="text-sm text-muted-foreground">{trip.duration} • {trip.type}</p>
                 </CardContent>
@@ -145,7 +154,7 @@ const Dashboard = () => {
 
           <div className="space-y-6">
             {sampleItinerary.map((day, dayIndex) => (
-              <Card key={dayIndex} className="bg-white/90 backdrop-blur-sm shadow-travel">
+              <Card key={dayIndex} className="bg-white border border-gray-200 shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-travel-gradient rounded-full flex items-center justify-center text-white font-bold">
@@ -160,8 +169,10 @@ const Dashboard = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {day.activities.map((activity, actIndex) => (
-                      <div key={actIndex} className="flex items-center gap-4 p-4 bg-card-gradient rounded-lg">
-                        <div className="text-2xl">{activity.icon}</div>
+                      <div key={actIndex} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                        <div className={`w-10 h-10 bg-gradient-to-br ${getActivityColor(activity.type)} rounded-lg flex items-center justify-center`}>
+                          <MapPin className="w-5 h-5 text-white" />
+                        </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <Clock className="h-4 w-4 text-primary" />
@@ -186,14 +197,14 @@ const Dashboard = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 justify-center mt-8">
-            <Button variant="travel" size="lg">
+            <Button className="bg-travel-gradient hover:opacity-90" size="lg">
               <MapPin className="h-5 w-5" />
               View on Map
             </Button>
             <Button variant="outline" size="lg">
               Save Itinerary
             </Button>
-            <Button variant="accent" size="lg">
+            <Button variant="secondary" size="lg">
               Share Trip
             </Button>
           </div>
